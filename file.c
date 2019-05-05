@@ -1,3 +1,4 @@
+//Copy data to the EEPROM from a buffer.
 void copyToEEPROM(short addr, void *vdata, short size) {
 	char *data = (char*)vdata;
 	for (short i = 0; i < size; i++) {
@@ -5,6 +6,7 @@ void copyToEEPROM(short addr, void *vdata, short size) {
 	}
 }
 
+//Copy data from the EEPROM into a buffer.
 void copyFromEEPROM(short addr, void *vdata, short size) {
 	char *data = (char*)vdata;
 	for (short i = 0; i < size; i++) {
@@ -15,7 +17,7 @@ void copyFromEEPROM(short addr, void *vdata, short size) {
 
 //Reformats the EEPROM and clears all data.
 void eepromReformat() {
-	//Set the file list size to be 1 for the ROOT.
+	//Set the file list size to be 0.
 	char fileSize = 0;
 	copyToEEPROM(FILE_SIZE_ADDR, &fileSize, sizeof(char));
 	//Set the journal to be empty.
