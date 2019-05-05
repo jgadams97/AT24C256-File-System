@@ -1,17 +1,17 @@
 /*
-	A very simple file system for EEPROMs.
+	A file system for EEPROMs.
 	
 	File names are stored linearly, meaning finding a file
 	takes O(n) time where n is the max number of files the
 	device can hold.
 	
-	File data is stored in a journaling file system. This
-	allows for files to be of arbitrary size and make use
-	of the entire memory device.
-	
 	File data blocks are connected through a linked list.
 	This allows for quick retrieval of all the data of a
-	file once its file name is found.
+	file once its file name is found. It also allows for
+	data blocks to not have to be stored linearly on the
+	device, but can be broken up and different parts of
+	the file stored in different locations in order to
+	use as much of the memory device as possible.
 	
 	File name blocks consist of...
 		1. 	The files name as a string of ASCII characters.
@@ -29,13 +29,11 @@
 			will be the address of its first data block.
 	
 	File data blocks consist of...
-		1.	A count. This is the number of data blocks
-			associated with this file.
-		2.	A size. This is how much of the data block is
+		1.	A size. This is how much of the data block is
 			actually filled up by the file data.
-		3.	A "next" pointer which points to the next data
+		2.	A "next" pointer which points to the next data
 			block.
-		4.	The data itself.
+		3.	The data itself.
 	
 	The journal is broken up into two parts:
 		1. 	The journal size, which is simply a single
@@ -43,6 +41,9 @@
 			journal.
 		2.	The journal itself, which is a list of pointers
 			to empty data blocks.
+		Note that this is NOT a journaling file system. The
+		"journal" here simply refers to a stack that keeps
+		track of the location of deleted file blocks.
 			
 	
 		
