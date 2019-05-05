@@ -65,14 +65,10 @@ char eepromRead(unsigned int addr) {
 	return val;	
 }
 
-char eepromSuccess() {
-	return EEPROM_STATUS;
-}
-
 char eepromSetup(char addr, int pinSDA, int pinSCL) {
 	i2cSetup(pinSDA, pinSCL);
 	EEPROM_ADDRESS = (addr << 1) & 0b110;
 	eepromRead(0);
-	return eepromSuccess();
+	return EEPROM_STATUS;
 }
 
