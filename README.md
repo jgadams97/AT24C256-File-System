@@ -84,4 +84,4 @@ while (listFilesInFolder(&myFolder, name)) {
 
 Note that this will also list folders as well and folder names will have a "/" character appended to the beginning and end of the name. 
 
-Can this support AT24Cx chips of different sizes? Probably. I don't know because I do not own other sizes. 16-bit shorts are used to store memory addresses, so if the size is significantly larger you may need to change the data types for it to work. Changing shorts to longs will cause the size of the journal to increase as well.
+Can this support AT24Cx chips of different sizes? Probably. I don't know because I do not own other sizes. 16-bit shorts are used to store memory addresses, so if the size is significantly larger you may need to change the data types for it to work.
