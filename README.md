@@ -1,4 +1,4 @@
-# AT24C256-File-System
+# AT24C256 File System
 A simple journaling file system for the AT24C256 I2C EEPROM. 
 
 In order to use it, you must reformat the EEPROM once.
