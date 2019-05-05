@@ -1,5 +1,5 @@
 # AT24C256 File System
-A simple journaling file system for the AT24C256 I2C EEPROM. 
+A journaling file system for the AT24C256 I2C EEPROM. 
 
 In order to use it, you must reformat the EEPROM once.
 
@@ -57,6 +57,8 @@ for (int i = 0; i < myFile.size; i++) {
 ```
 
 Files do not need to be closed. "File" is not an object but a struct. No memory leaks can occur with this design. You also do not need to worry about "committing" your writes to files. Whenever you call "writeFile", that byte is immediately written to the EEPROM. 
+
+Note that due to EEPROMs having limited writes, deleting files will not clear the data within the file, nor will resizing the file or creating a new file. This means that if you create a new file, the file's contents will be whatever contents that just so happened to exist at the memory location it was assigned. If you want to clear the file after creating it, you'll want to do that manually by writing 0x00 characters to the file once it's created. 
 
 Here are the functions for handling folders.
 
