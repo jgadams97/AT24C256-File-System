@@ -20,7 +20,7 @@ void setup() {
 }
 ```
 
-After running this once, you can read and write files and folders to it. Here are the methods regarding file creation.
+After running this once, you can read and write files and folders to it. Here are the methods regarding file creation. Reformatting the EEPROM a second time will cause all files on the device to be deleted.
 
 ```
 File createFile(short size, Folder *folder, char *name);
