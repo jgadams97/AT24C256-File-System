@@ -85,3 +85,5 @@ while (listFilesInFolder(&myFolder, name)) {
 Note that this will also list folders as well and folder names will have a "/" character appended to the beginning and end of the name. 
 
 Can this support AT24Cx chips of different sizes? Probably. I don't know because I do not own other sizes. 16-bit shorts are used to store memory addresses, so if the size is significantly larger you may need to change the data types for it to work.
+
+The file system may become corrupted if the power is disrupted when creating, resizing, or deleting files and folders. It cannot become corrupted while writing to a file as writing to a file does not alter the file system itself.
