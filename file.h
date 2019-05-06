@@ -110,7 +110,7 @@ char compareFileNames(char *a, char *b);
 char findFileNameBlock(char directory, char *name, char type);
 char directoryExists(char directory);
 char findEmptyFileNameBlock();
-char createFileNameBlock(char directory, char type, short size, char *name);
+char createFileNameBlock(short addr, char directory, char type, short size, char *name);
 void deleteFileNameBlock(char index);
 Folder createFolder(Folder *parent, char *name);
 File createFile(short size, Folder *folder, char *name);
