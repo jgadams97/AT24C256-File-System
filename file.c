@@ -247,7 +247,6 @@ Folder createFolder(Folder *parent, char *name) {
 //		2	File already exists.
 //		3	Max files reached.
 File createFile(short size, Folder *folder, char *name) {
-	Serial.println("Creating file.");
 	File myFile;
 	myFile.address = undefined;
 	//Fetch directory index.
@@ -257,20 +256,16 @@ File createFile(short size, Folder *folder, char *name) {
 	else
 		directory = folder->index;
 	//Check if the directory exists.
-	Serial.println("Checking directory.");
 	if (!directoryExists(directory)) {
-		//printf("directoryExists(%i) == %i\n", directory, directoryExists(directory));
 		myFile.status = 1;
 		return myFile;
 	}
 	//Check if the file doesn't already exist.
-	Serial.println("Checking file name block.");
 	if (findFileNameBlock(directory, name, FILE_FLAG_FILE) != (char)undefined) {
 		myFile.status = 2;
 		return myFile;
 	}
 	//Create new file name block.
-	Serial.println("Creating file name block.");
 	char index = createFileNameBlock(directory, FILE_FLAG_FILE, size, name);
 	myFile.index = index;
 	//Copy name to file.
@@ -284,7 +279,7 @@ File createFile(short size, Folder *folder, char *name) {
 	}
 	myFile.name[FILE_NAME_SIZE] = 0;
 	//If it failed, then we can't store anymore files.
-	if (index == undefined) {
+	if (index == (char)undefined) {
 		myFile.status = 3;
 		return myFile;
 	}
@@ -312,10 +307,6 @@ File createFile(short size, Folder *folder, char *name) {
 		//If we haven't set the address yet, this is the address.
 		if (myFile.address == (short)undefined) {
 			myFile.address = addr;
-			Serial.print("Setting initial address as ");
-			Serial.print(addr);
-			Serial.print(".\n");
-			//printf("Setting initial address as %i.\n", addr);
 		} else {
 			//Link previous data block to this one.
 			copyFromEEPROM(DATA_ADDR + paddr, &data, sizeof(short) * 2);
@@ -324,19 +315,8 @@ File createFile(short size, Folder *folder, char *name) {
 				data.size = DATA_BLOCK_SIZE;
 				copyToEEPROM(DATA_ADDR + paddr, &data, sizeof(short) * 2);
 			}
-			Serial.print("Linking ");
-			Serial.print(paddr);
-			Serial.print(" to ");
-			Serial.print(addr);
-			Serial.print(".\n");
-			//printf("Linking %i to %i.\n", paddr, addr);
 		}
-			
-		Serial.print("Linking %i through ");
-		Serial.print(addr);
-		Serial.print(".\n");
-		//printf("Linking %i through ", addr);
-		
+
 		//Loop until this journal entry does not have a next data.
 		do {
 			//Load the data block.
@@ -348,7 +328,6 @@ File createFile(short size, Folder *folder, char *name) {
 			addr = data.next;
 		} while (addr != (short)undefined && count > 0);
 		
-		//printf("%i.\n", paddr);
 		
 		//If we still have data left but our count is empty,
 		//	we need to tell the journal there's still empty
@@ -367,18 +346,9 @@ File createFile(short size, Folder *folder, char *name) {
 			data.size = offset;
 			if (paddr != (short)undefined) {
 				copyToEEPROM(DATA_ADDR + paddr, &data, sizeof(short) * 2);
-				Serial.print("Setting ");
-				Serial.print(paddr);
-				Serial.print(" as the end.\n");
-				//printf("1 Setting %i as the end.\n", paddr);
 			} else {
 				copyToEEPROM(DATA_ADDR + myFile.address, &data, sizeof(short) * 2);
-				//printf("2 Setting %i as the end.\n", myFile.address);
-				Serial.print("Setting ");
-				Serial.print(myFile.address);
-				Serial.print(" as the end.\n");
 			}
-			//printf("Count reached 0\n");
 		}
 		
 		//If we did reach the end, update addr.
@@ -404,10 +374,6 @@ File createFile(short size, Folder *folder, char *name) {
 		//If we haven't set the address yet, this is the address.
 		if (myFile.address == (short)undefined) {
 			myFile.address = addr;
-				Serial.print("Setting ");
-				Serial.print(addr);
-				Serial.print(" as the end.\n");
-			//printf("Setting initial address as %i.\n", addr);
 		} else {
 			//Link previous data block to this one.
 			copyFromEEPROM(DATA_ADDR + paddr, &data, sizeof(short) * 2);
@@ -416,12 +382,6 @@ File createFile(short size, Folder *folder, char *name) {
 				data.size = DATA_BLOCK_SIZE;
 				copyToEEPROM(DATA_ADDR + paddr, &data, sizeof(short) * 2);
 			}
-				Serial.print("Linking ");
-				Serial.print(paddr);
-				Serial.print(" to ");
-				Serial.print(addr);
-				Serial.print(".\n");
-			//printf("Linking %i to %i.\n", paddr, addr);
 		}
 		count--;
 		
@@ -433,10 +393,6 @@ File createFile(short size, Folder *folder, char *name) {
 				data.size = offset;
 				copyToEEPROM(DATA_ADDR + addr, &data, sizeof(short) * 2);
 			}
-			Serial.print("Setting ");
-			Serial.print(addr);
-			Serial.print(" as the end.\n");
-			//printf("3 Setting %i as the end.\n", addr);
 		}
 	}
 	//Save new size.
@@ -502,11 +458,9 @@ void resizeFile(File *myFile, short newSize) {
 }
 
 void printFileData(File f) {
-	//printf("File[%i] `%s` (%i bytes):\n", f.index, f.name, f.size);
 	short count = f.size % DATA_BLOCK_SIZE == 0 ?
 		f.size / DATA_BLOCK_SIZE : f.size / DATA_BLOCK_SIZE + 1;
 	if (count == 0) {
-		//printf("\tNo data blocks.\n");
 		return;
 	}
 	
@@ -515,7 +469,6 @@ void printFileData(File f) {
 	do {
 		FileDataBlock data;
 		copyFromEEPROM(DATA_ADDR + addr, &data, sizeof(FileDataBlock));
-		//printf("\tData Block %i = *%i (%i)\n", i++, addr, data.size);
 		addr = data.next;
 	} while (addr != (short)undefined && i < 30);
 }
@@ -633,6 +586,7 @@ File openFile(Folder *parent, char *name) {
 	myFile.address = fnb.address;
 	myFile.seekPos = 0;
 	myFile.seekAddr = myFile.address;
+	
 	return myFile;
 }
 
@@ -646,7 +600,7 @@ char readFile(File *file) {
 	
 	//Return nothing if we're at the end.
 	if (data.next == (short)undefined) {
-		if (file->seekPos == DATA_BLOCK_SIZE) {
+		if (file->seekPos == data.size) {
 			return 0;
 		}
 	}
